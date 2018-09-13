@@ -4,6 +4,7 @@
   "description": "写一个类似于createl-react-app 的node-cli应用",
   "main": "index.js",
   "scripts": {
+    "start": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,6 +25,8 @@
   "homepage": "https://github.com/strongcode9527/cli#readme",
   "dependencies": {
     "chalk": "^2.4.1",
-    "commander": "^2.17.1"
+    "commander": "^2.17.1",
+    "gulp": "^3.9.1",
+    "shelljs": "^0.8.2"
   }
 }
