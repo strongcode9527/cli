@@ -1,0 +1,21 @@
+{
+  "extends": "eslint:recommended",
+  "ecmaFeatures":{
+    "modules":false
+  },
+  "env":{
+    "browser":true,
+    "es6":true,
+    "amd": true,
+    "node": true
+  },
+  "rules":{
+    "strict":0,
+    "valid-jsdoc":2,
+    "semi": 0,
+    "no-console":0,
+    "no-plusplus": 0,
+    "no-param-reassign": 0,
+    "no-shadow": 0
+  }
+}
