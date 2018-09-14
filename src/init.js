@@ -1,12 +1,18 @@
 const fs = require('fs')
 const path = require('path')
 const inquirer = require('inquirer');
-const chalk = require('chalk')
+
 module.exports = function(args) {
   
-  const projectDir = createProjectDir(args[0])
-  // console.log('resolve', projectDir)
+ createProjectDir(args[0])
+  
 }
+
+
+function pathIsExit(projectName) {
+  return fs.existsSync(path.resolve(process.cwd(), `./${projectName}`))
+}
+
 
 /**
  * 
@@ -14,11 +20,9 @@ module.exports = function(args) {
  * @returns {String} 返回新建的文件夹的绝对路径
  */
 function createProjectDir(projectName) {
-  const currentDir = process.cwd()
-  let projectPath = path.resolve(currentDir, `./${projectName}`)
-  const dirIsExit = fs.existsSync(projectPath)
-
-  if(dirIsExit) {
+  let projectPath = path.resolve(process.cwd(), `./${projectName}`)
+  // 如果文件已经存在。
+  if(pathIsExit(projectName)) {
     inquirer.prompt([
       {
         type: 'confirm',
@@ -39,13 +43,31 @@ function createProjectDir(projectName) {
       }
     ]
   ).then((answers) => {
-      console.log('结果为:')
-      console.log(answers)
+    let projectPath = path.resolve(process.cwd(), `./${answers.name}`)
+      if(answers.cm && answers.name) {
+        if(pathIsExit(answers.name)) {
+          console.log('项目已存在,请重新创建项目')
+          process.exit(0)
+          return
+        }else {
+          fs.mkdirSync(projectPath)
+          createProjectFiles(projectPath)
+        }
+      }else {
+        console.log('请输入项目名称')
+      }
     })
-  }else {
-
   }
+  // 文件不存在，直接创建。
+  else {
+    fs.mkdirSync(projectPath)
+    createProjectFiles(projectPath)
+  }
+}
 
-  // console.log('in init ', currentDir, projectName, fs.existsSync(projectPath))
-  return projectPath
+/**
+ * 创建文件夹后进行创建文件的东西
+ */
+function createProjectFiles() {
+
 }
