@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const inquirer = require('inquirer');
+const package = require('./templates/package')
 
 module.exports = function(args) {
   
@@ -68,6 +69,6 @@ function createProjectDir(projectName) {
 /**
  * 创建文件夹后进行创建文件的东西
  */
-function createProjectFiles() {
-
+function createProjectFiles(projectPath) {
+  fs.writeFileSync(path.resolve(projectPath, './package.json'), JSON.stringify(package))
 }
