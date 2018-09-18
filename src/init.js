@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
-const inquirer = require('inquirer');
-const package = require('./templates/package')
+const shell = require('shelljs')
+const inquirer = require('inquirer')
 
 module.exports = function(args) {
   
@@ -70,5 +70,53 @@ function createProjectDir(projectName) {
  * 创建文件夹后进行创建文件的东西
  */
 function createProjectFiles(projectPath) {
-  fs.writeFileSync(path.resolve(projectPath, './package.json'), JSON.stringify(package))
+  copyDir(path.resolve(__dirname, './templates'), projectPath, function(err){
+    if(err){
+      console.log(err);
+    }
+  })
+}
+
+function copyDir(src, dist, callback) {
+  fs.access(dist, function(err){
+    if(err){
+      // 目录不存在时创建目录
+      fs.mkdirSync(dist);
+    }
+    _copy(null, src, dist);
+  });
+
+  function _copy(err, src, dist) {
+    if(err){
+      callback(err);
+    } else {
+      fs.readdir(src, function(err, paths) {
+        if(err){
+          callback(err)
+        } else {
+          paths.forEach(function(path) {
+            var _src = src + '/' + path;
+            var _dist = dist + '/' + path;
+            
+            fs.stat(_src, function(err, stat) {
+              if(err){
+                callback(err);
+              } else {
+                // 判断是文件还是目录
+                if(stat.isFile()) {
+                  fs.writeFileSync(_dist, fs.readFileSync(_src));
+                  if(path === 'package.json') {
+                    shell.exec(`cd ${dist} && npm install`)
+                  }
+                } else if(stat.isDirectory()) {
+                  // 当是目录是，递归复制
+                  copyDir(_src, _dist, callback)
+                }
+              }
+            })
+          })
+        }
+      })
+    }
+  }
 }
