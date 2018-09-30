@@ -1,6 +1,6 @@
 {
   "name": "cli",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "写一个类似于createl-react-app 的node-cli应用",
   "main": "index.js",
   "scripts": {

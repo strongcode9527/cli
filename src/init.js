@@ -52,7 +52,7 @@ function createProjectDir(projectName) {
           return
         }else {
           fs.mkdirSync(projectPath)
-          createProjectFiles(projectPath)
+          createProjectFiles(projectPath, projectName)
         }
       }else {
         console.log('请输入项目名称')
@@ -62,22 +62,22 @@ function createProjectDir(projectName) {
   // 文件不存在，直接创建。
   else {
     fs.mkdirSync(projectPath)
-    createProjectFiles(projectPath)
+    createProjectFiles(projectPath, projectName)
   }
 }
 
 /**
  * 创建文件夹后进行创建文件的东西
  */
-function createProjectFiles(projectPath) {
-  copyDir(path.resolve(__dirname, './templates'), projectPath, function(err){
+function createProjectFiles(projectPath, projectName) {
+  copyDir(path.resolve(__dirname, './templates'), projectPath, projectName, function(err){
     if(err){
       console.log(err);
     }
   })
 }
 
-function copyDir(src, dist, callback) {
+function copyDir(src, dist, projectName, callback) {
   fs.access(dist, function(err){
     if(err){
       // 目录不存在时创建目录
@@ -106,7 +106,11 @@ function copyDir(src, dist, callback) {
                 if(stat.isFile()) {
                   fs.writeFileSync(_dist, fs.readFileSync(_src));
                   if(path === 'package.json') {
-                    shell.exec(`cd ${dist} && npm install`)
+                    shell.echo('初始化依赖包，请稍后。。。。')
+                    shell.exec(`cd ${dist} && npm install`, function() {
+                      shell.echo('您的项目构建完成, 使用以下命令行进行项目开发')
+                      shell.echo(`cd ${projectName} && npm start`)
+                    })
                   }
                 } else if(stat.isDirectory()) {
                   // 当是目录是，递归复制
